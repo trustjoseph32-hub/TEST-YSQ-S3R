@@ -9,6 +9,11 @@ export enum Type {
   NULL = "NULL",
 }
 
+export enum Gender {
+  MALE = "male",
+  FEMALE = "female",
+}
+
 export interface Domain {
   id: string;
   name: string;
@@ -32,7 +37,8 @@ export interface Schema {
 export interface Question {
   id: number;
   schemaId: string;
-  text: string;
+  textMale: string;
+  textFemale: string;
 }
 
 export interface SchemaResult {

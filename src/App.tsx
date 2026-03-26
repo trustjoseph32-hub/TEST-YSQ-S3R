@@ -12,7 +12,7 @@ import {
   Download, Loader2
 } from 'lucide-react';
 import { questions, schemas, domains, testData } from './data';
-import { SchemaResult } from './types';
+import { SchemaResult, Gender } from './types';
 
 // --- Components ---
 
@@ -59,14 +59,49 @@ const IntroScreen = ({ onStart }: { onStart: () => void, key?: string }) => (
   </motion.div>
 );
 
+const GenderSelectionScreen = ({ onSelect }: { onSelect: (gender: Gender) => void, key?: string }) => (
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="max-w-xl mx-auto bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center"
+  >
+    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8">Выберите ваш пол</h2>
+    <p className="text-gray-500 mb-10">Это необходимо для корректного отображения вопросов теста.</p>
+    
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <button
+        onClick={() => onSelect(Gender.MALE)}
+        className="group relative bg-slate-50 hover:bg-indigo-50 border-2 border-transparent hover:border-indigo-200 p-8 rounded-2xl transition-all duration-300 flex flex-col items-center gap-4"
+      >
+        <div className="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+          <span className="text-3xl font-bold">М</span>
+        </div>
+        <span className="text-xl font-bold text-gray-800">Мужской</span>
+      </button>
+
+      <button
+        onClick={() => onSelect(Gender.FEMALE)}
+        className="group relative bg-slate-50 hover:bg-pink-50 border-2 border-transparent hover:border-pink-200 p-8 rounded-2xl transition-all duration-300 flex flex-col items-center gap-4"
+      >
+        <div className="w-16 h-16 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+          <span className="text-3xl font-bold">Ж</span>
+        </div>
+        <span className="text-xl font-bold text-gray-800">Женский</span>
+      </button>
+    </div>
+  </motion.div>
+);
+
 const TestScreen = ({ 
   answers, 
   onAnswer, 
-  onComplete 
+  onComplete,
+  gender
 }: { 
   answers: Record<number, number>, 
   onAnswer: (qId: number, val: number) => void,
   onComplete: () => void,
+  gender: Gender,
   key?: string
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -130,7 +165,7 @@ const TestScreen = ({
             <div key={q.id} className="bg-white p-5 md:p-6 rounded-xl md:rounded-2xl shadow-sm border border-gray-100">
               <p className="text-base md:text-lg text-gray-800 mb-6 leading-snug">
                 <span className="text-indigo-400 font-bold mr-2">#{q.id}</span>
-                {q.text}
+                {gender === Gender.MALE ? q.textMale : q.textFemale}
               </p>
               <div className="grid grid-cols-6 gap-1.5 md:gap-3">
                 {[1, 2, 3, 4, 5, 6].map((val) => (
@@ -396,7 +431,8 @@ const ResultsScreen = ({ results, onReset }: { results: SchemaResult[], onReset:
 // --- Main App ---
 
 export default function App() {
-  const [screen, setScreen] = useState<'intro' | 'test' | 'results'>('intro');
+  const [screen, setScreen] = useState<'intro' | 'gender' | 'test' | 'results'>('intro');
+  const [gender, setGender] = useState<Gender | null>(null);
   const [answers, setAnswers] = useState<Record<number, number>>({});
 
   // Global scroll to top on screen change
@@ -436,6 +472,7 @@ export default function App() {
 
   const handleReset = () => {
     setAnswers({});
+    setGender(null);
     setScreen('intro');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -445,13 +482,23 @@ export default function App() {
       <div className="container mx-auto">
         <AnimatePresence mode="wait">
           {screen === 'intro' && (
-            <IntroScreen key="intro" onStart={() => setScreen('test')} />
+            <IntroScreen key="intro" onStart={() => setScreen('gender')} />
           )}
-          {screen === 'test' && (
+          {screen === 'gender' && (
+            <GenderSelectionScreen 
+              key="gender" 
+              onSelect={(g) => {
+                setGender(g);
+                setScreen('test');
+              }} 
+            />
+          )}
+          {screen === 'test' && gender && (
             <TestScreen 
               key="test" 
               answers={answers} 
               onAnswer={handleAnswer} 
+              gender={gender}
               onComplete={() => {
                 setScreen('results');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
