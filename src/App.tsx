@@ -25,9 +25,8 @@ const IntroScreen = ({ onStart }: { onStart: () => void, key?: string }) => (
     <div className="p-6 md:p-12">
       <div className="flex items-center gap-3 mb-4 md:mb-6 text-indigo-600">
         <ClipboardList size={28} className="md:w-8 md:h-8" />
-        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">YSQ-S3R</h1>
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Схемный опросник</h1>
       </div>
-      <h2 className="text-xl md:text-2xl font-semibold mb-4 text-gray-900 leading-tight">Схемный опросник Янга</h2>
       <p className="text-gray-600 mb-6 text-sm md:text-base leading-relaxed">
         Этот тест поможет вам выявить ваши <strong>ранние дезадаптивные схемы</strong> — устойчивые паттерны мышления и поведения, 
         сформированные в детстве. Понимание своих схем — первый шаг к осознанным изменениям в жизни и отношениях.

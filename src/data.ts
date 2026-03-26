@@ -1,7 +1,7 @@
 import { Type } from "./types";
 
 export const testData = {
-  name: "Схемный опросник Янга (YSQ-S3R)",
+  name: "Схемный опросник",
   description: "Опросник для выявления 18 ранних дезадаптивных схем.",
   scale: {
     "1": "Совершенно не описывает меня",
